@@ -196,3 +196,94 @@ longest_trip = max(onebike_durations)
 # Print out the results
 print("The shortest trip was " + str(shortest_trip) + " seconds")
 print("The longest trip was " + str(longest_trip) + " seconds")
+
+# Import tz
+from dateutil import tz
+
+# Create a timezone object for Eastern Time
+et = tz.gettz('America/New_York')
+
+# Loop over trips, updating the datetimes to be in Eastern Time
+for trip in onebike_datetimes[:10]:
+  # Update trip['start'] and trip['end']
+  trip['start'] = trip['start'].replace(tzinfo=et)
+  trip['end'] = trip['end'].replace(tzinfo=et)
+
+# Create the timezone object
+uk = tz.gettz('Europe/London')
+
+# Pull out the start of the first trip
+local = onebike_datetimes[0]['start']
+
+# What time was it in the UK?
+notlocal = local.astimezone(uk)
+
+# Print them out and see the difference
+print(local.isoformat())
+print(notlocal.isoformat())
+
+# Create the timezone object
+ist = tz.gettz('Asia/Kolkata')
+
+# Pull out the start of the first trip
+local = onebike_datetimes[0]['start']
+
+# What time was it in India?
+notlocal = local.astimezone(ist)
+
+# Print them out and see the difference
+print(local.isoformat())
+print(notlocal.isoformat())
+
+# Create the timezone object
+sm = tz.gettz('Pacific/Apia')
+
+# Pull out the start of the first trip
+local = onebike_datetimes[0]['start']
+
+# What time was it in Samoa?
+notlocal = local.astimezone(sm)
+
+# Print them out and see the difference
+print(local.isoformat())
+print(notlocal.isoformat())
+
+# Import datetime, timedelta, tz, timezone
+from datetime import datetime, timedelta, timezone
+from dateutil import tz
+
+# Start on March 12, 2017, midnight, then add 6 hours
+start = datetime(2017, 3, 12, tzinfo = tz.gettz('America/New_York'))
+end = start + timedelta(hours=6)
+print(start.isoformat() + " to " + end.isoformat())
+# How many hours have elapsed?
+print((end - start).total_seconds()/(60*60))
+
+# What if we move to UTC?
+print((end.astimezone(timezone.utc) - start.astimezone(timezone.utc))\
+      .total_seconds()/(60*60))
+
+# Loop over trips
+for trip in onebike_datetimes:
+  # Rides with ambiguous start
+  if tz.datetime_ambiguous(trip['start']):
+    print("Ambiguous start at " + str(trip['start']))
+  # Rides with ambiguous end
+  if tz.datetime_ambiguous(trip['end']):
+    print("Ambiguous end at " + str(trip['end']))
+
+trip_durations = []
+for trip in onebike_datetimes:
+  # When the start is later than the end, set the fold to be 1
+  if trip['start'] > trip['end']:
+    trip['end'] = tz.enfold(trip['end'])
+  # Convert to UTC
+  start = trip['start'].astimezone(timezone.utc)
+  end = trip['end'].astimezone(timezone.utc)
+
+  # Subtract the difference
+  trip_length_seconds = (end-start).total_seconds()
+  trip_durations.append(trip_length_seconds)
+
+# Take the shortest trip duration
+print("Shortest trip: " + str(min(trip_durations)))
