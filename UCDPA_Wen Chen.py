@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import seaborn
 
 WHR_2015 = pd.read_csv("2015.csv")
 WHR_2016 = pd.read_csv("2016.csv")
@@ -82,5 +83,14 @@ WHR_2018_new=WHR_2018_new.filter(list)
 WHR_2019_new=WHR_2019_new.filter(list)
 
 for n in [WHR_2015_new, WHR_2016_new, WHR_2017_new, WHR_2018_new, WHR_2019_new]:
-    print(n.head())
+    print(n.info())
 
+#Now the above data has the same columns needed for analysis so can cantenate them now.
+
+WHR_Final=pd.concat([WHR_2015_new, WHR_2016_new, WHR_2017_new, WHR_2018_new, WHR_2019_new], axis =0)
+print(WHR_Final.info())
+
+#Now we have a data set containing 5 year world happiness data of each country and each region.
+
+import matplotlib.pyplot as plt
+imprt seaborn as sns
