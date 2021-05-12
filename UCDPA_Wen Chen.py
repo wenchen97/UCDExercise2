@@ -14,14 +14,15 @@ WHR_2019 = pd.read_csv("2019.csv")
 #print(WHR_2018.info())
 #print(WHR_2019.info())
 
+
 WHR_2018['Perceptions of corruption'] = WHR_2018['Perceptions of corruption'].fillna(0)
 print(WHR_2018.info())
 
-WHR_2015['Year'] = "2015"
-WHR_2016['Year'] = "2016"
-WHR_2017['Year'] = "2017"
-WHR_2018['Year'] = "2018"
-WHR_2019['Year'] = "2019"
+WHR_2015['Year'] = 2015
+WHR_2016['Year'] = 2016
+WHR_2017['Year'] = 2017
+WHR_2018['Year'] = 2018
+WHR_2019['Year'] = 2019
 
 WHR_2015_new = WHR_2015.filter(['Happiness Rank', 'Country', 'Region', 'Economy (GDP per Capita)','Family',
                         'Health (Life Expectancy)', 'Freedom', 'Trust (Government Corruption)','Generosity',
@@ -90,7 +91,35 @@ for n in [WHR_2015_new, WHR_2016_new, WHR_2017_new, WHR_2018_new, WHR_2019_new]:
 WHR_Final=pd.concat([WHR_2015_new, WHR_2016_new, WHR_2017_new, WHR_2018_new, WHR_2019_new], axis =0)
 print(WHR_Final.info())
 
-#Now we have a data set containing 5 year world happiness data of each country and each region.
+#Now we have a data set containing 5 year world happiness data of each country and each region and for each year.
 
 import matplotlib.pyplot as plt
-imprt seaborn as sns
+import seaborn as sns
+
+Region_list={'Western Europe': 'WE', 'North America': 'NA', 'Australia and New Zealand': 'ANZ', 'Middle East and Northern Africa': 'MENA',
+             'Latin America and Caribbean':'LAC', 'Southeastern Asia':'SEA', 'Central and Eastern Europe':'CEE',
+             'Eastern Asia':'EA', 'Sub-Saharan Africa':'SSA', 'Southern Asia': 'SA'}
+
+WHR_Final['Region'].replace(Region_list, inplace=True)
+
+_ = sns.stripplot(x='Region', y='Happiness Score', data=WHR_Final)
+_ = plt.xlabel('Region')
+_ = plt.ylabel('Happiness Score')
+plt.show()
+
+
+
+plt.figure(figsize=(10,10))
+corr_mat = sns.heatmap(WHR_Final.corr(), vmin=-1, vmax=1, annot=True)
+corr_mat.set_title('Correlation Heatmap', fontdict={'fontsize':12}, pad=12)
+plt.show()
+
+
+
+
+
+
+
+
+
+
