@@ -7,11 +7,8 @@ WHR_2017 = pd.read_csv("2017.csv")
 WHR_2018 = pd.read_csv("2018.csv")
 WHR_2019 = pd.read_csv("2019.csv")
 
-#print(WHR_2015.info())
-#print(WHR_2016.info())
-#print(WHR_2017.info())
-#print(WHR_2018.info())
-#print(WHR_2019.info())
+for n in [WHR_2015, WHR_2016, WHR_2017, WHR_2018, WHR_2019]:
+    print(n.info())
 
 
 WHR_2018['Perceptions of corruption'] = WHR_2018['Perceptions of corruption'].fillna(0)
@@ -87,7 +84,7 @@ for n in [WHR_2015_new, WHR_2016_new, WHR_2017_new, WHR_2018_new, WHR_2019_new]:
 
 #Now the above data has the same columns needed for analysis so can cantenate them now.
 
-WHR_Final=pd.concat([WHR_2015_new, WHR_2016_new, WHR_2017_new, WHR_2018_new, WHR_2019_new], axis =0)
+WHR_Final = pd.concat([WHR_2015_new, WHR_2016_new, WHR_2017_new, WHR_2018_new, WHR_2019_new], axis =0)
 print(WHR_Final.info())
 
 #Now we have a data set containing 5 year world happiness data of each country and each region and for each year.
@@ -101,30 +98,22 @@ Region_list={'Western Europe': 'WE', 'North America': 'NA', 'Australia and New Z
 
 WHR_Final['Region'].replace(Region_list, inplace=True)
 
-#_ = sns.stripplot(x='Region', y='Happiness Score', data=WHR_Final)
-#_ = plt.xlabel('Region')
-#_ = plt.ylabel('Happiness Score')
-#plt.show()
+_ = sns.stripplot(x='Region', y='Happiness Score', data=WHR_Final)
+_ = plt.xlabel('Region')
+_ = plt.ylabel('Happiness Score')
+plt.show()
 
 
-#plt.figure(figsize=(10,10))
-#corr_mat = sns.heatmap(WHR_Final.corr(), vmin=-1, vmax=1, annot=True)
-#corr_mat.set_title('Correlation Heatmap', fontdict={'fontsize':12}, pad=12)
-#plt.show()
+plt.figure(figsize=(10,10))
+corr_mat = sns.heatmap(WHR_Final.corr(), vmin=-1, vmax=1, annot=True)
+corr_mat.set_title('Correlation Heatmap', fontdict={'fontsize':12}, pad=12)
+plt.show()
 
 #To perform machine learning on factors determing the happiness score, keep only the feature with a type "float"
 
 WHR_2 = WHR_Final.select_dtypes(["float64"])
-#print(WHR_2.info())
+print(WHR_2.info())
 
-feature_list = ['Economy (GDP per Capita)','Family','Health (Life Expectancy)', 'Freedom', 'Trust (Government Corruption)','Generosity','Happiness Score']
-
-#for col in feature_list:
-    #sns.boxplot(x = WHR_2[col])
-    #plt.xlabel(col)
-    #plt.show()
-
-from sklearn.model_selection import cross_val_score
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error as MSE
@@ -165,7 +154,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, rando
 reg.fit(X_train, y_train)
 y_pred = reg.predict(X_test)
 print(reg.score(X_test, y_test))
-rmse_test = MSE(y_test, y_pred)**1/2
+rmse_test = np.sqrt(MSE(y_test, y_pred))
 print('Test set RMSE: {:.2f}'.format(rmse_test))
 
 
@@ -174,7 +163,7 @@ gbt = GradientBoostingRegressor(n_estimators=300, max_depth=1, random_state=2)
 gbt.fit(X_train, y_train)
 y_pred_gbt = gbt.predict(X_test)
 print(gbt.score(X_test, y_test))
-rmse_test_gbt = MSE(y_test, y_pred_gbt)**1/2
+rmse_test_gbt = np.sqrt(MSE(y_test, y_pred_gbt))
 print('Test set RMSE_GBT: {:.2f}'.format(rmse_test_gbt))
 
 
