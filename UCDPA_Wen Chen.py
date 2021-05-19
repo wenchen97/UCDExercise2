@@ -117,7 +117,7 @@ WHR_Final['Region'].replace(Region_list, inplace=True)
 WHR_2 = WHR_Final.select_dtypes(["float64"])
 #print(WHR_2.info())
 
-#feature_list = ['Economy (GDP per Capita)','Family','Health (Life Expectancy)', 'Freedom', 'Trust (Government Corruption)','Generosity','Happiness Score']
+feature_list = ['Economy (GDP per Capita)','Family','Health (Life Expectancy)', 'Freedom', 'Trust (Government Corruption)','Generosity','Happiness Score']
 
 #for col in feature_list:
     #sns.boxplot(x = WHR_2[col])
@@ -128,9 +128,10 @@ from sklearn.model_selection import cross_val_score
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error as MSE
-
 from sklearn.linear_model import Lasso
-names = WHR_2.drop("Happiness Score", axis=1).columns
+X = WHR_2.drop("Happiness Score", axis=1)
+y = WHR_2["Happiness Score"]
+names = X.columns
 lasso = Lasso(alpha=0.1)
 lasso_coef = lasso.fit(X,y).coef_
 _ = plt.plot(range(len(names)), lasso_coef)
