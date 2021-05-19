@@ -1,6 +1,5 @@
-import numpy as np
 import pandas as pd
-import seaborn
+import numpy as np
 
 WHR_2015 = pd.read_csv("2015.csv")
 WHR_2016 = pd.read_csv("2016.csv")
@@ -108,15 +107,68 @@ _ = plt.ylabel('Happiness Score')
 plt.show()
 
 
-
 plt.figure(figsize=(10,10))
 corr_mat = sns.heatmap(WHR_Final.corr(), vmin=-1, vmax=1, annot=True)
 corr_mat.set_title('Correlation Heatmap', fontdict={'fontsize':12}, pad=12)
 plt.show()
 
+#To perform machine learning on factors determing the happiness score, keep only the feature with a type "float"
+
+WHR_2 = WHR_Final.select_dtypes(["float64"])
+
+from sklearn.model_selection import cross_val_score
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error as MSE
 
 
+from sklearn.linear_model import Lasso
+names = X.columns
+lasso = Lasso(alpha=0.1)
+lasso_coef = lasso.fit(X,y).coef_
+_ = plt.plot(range(len(names)), lasso_coef)
+_ = plt.xticks(range(len(names)), names, rotation=60)
+_ = plt.ylabel('Coefficients')
+plt.show()
 
+
+X = WHR_2[["Economy (GDP per Capita)"]]
+y = WHR_2[['Happiness Score']]
+reg = LinearRegression()
+model = reg.fit(X,y)
+print("intercept: ", model.intercept_)
+print("coef: ", model.coef_)
+print("rcore. ", model.score(X,y))
+gdp_list = [[0.25],[0.50],[0.75],[1.00],[1.25],[1.50]]
+model.predict(gdp_list)
+for g in gdp_list:
+    print("The happiness value of the country with a gdp value of ",g,": ",model.predict([g]))
+reg = LinearRegression()
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 2)
+reg.fit(X_train, y_train)
+y_pred = reg.predict(X_test)
+print(reg.score(X_test, y_test))
+rmse_test = MSE(y_test, y_pred)**1/2
+print('Test set RMSE: {:.2f}'.format(rmse_test))
+
+X = WHR_2.drop("Happiness Score", axis=1)
+y = WHR_2["Happiness Score"]
+reg = LinearRegression()
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 2)
+reg.fit(X_train, y_train)
+y_pred = reg.predict(X_test)
+print(reg.score(X_test, y_test))
+rmse_test = MSE(y_test, y_pred)**1/2
+print('Test set RMSE: {:.2f}'.format(rmse_test))
+
+
+from sklearn.ensemble import GradientBoostingRegressor
+gbt = GradientBoostingRegressor(n_estimators=300, max_depth=1, random_state=2)
+gbt.fit(X_train, y_train)
+y_pred_gbt = gbt.predict(X_test)
+print(gbt.score(X_test, y_test))
+rmse_test_gbt = MSE(y_test, y_pred_gbt)**1/2
+print('Test set RMSE_GBT: {:.2f}'.format(rmse_test_gbt))
 
 
 
