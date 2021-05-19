@@ -144,7 +144,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, rando
 reg.fit(X_train, y_train)
 y_pred = reg.predict(X_test)
 print(reg.score(X_test, y_test))
-rmse_test = MSE(y_test, y_pred)**1/2
+rmse_test = np.sqrt(MSE(y_test, y_pred))
 print('Test set RMSE: {:.2f}'.format(rmse_test))
 
 X = WHR_2.drop("Happiness Score", axis=1)
