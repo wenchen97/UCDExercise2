@@ -101,36 +101,42 @@ Region_list={'Western Europe': 'WE', 'North America': 'NA', 'Australia and New Z
 
 WHR_Final['Region'].replace(Region_list, inplace=True)
 
-_ = sns.stripplot(x='Region', y='Happiness Score', data=WHR_Final)
-_ = plt.xlabel('Region')
-_ = plt.ylabel('Happiness Score')
-plt.show()
+#_ = sns.stripplot(x='Region', y='Happiness Score', data=WHR_Final)
+#_ = plt.xlabel('Region')
+#_ = plt.ylabel('Happiness Score')
+#plt.show()
 
 
-plt.figure(figsize=(10,10))
-corr_mat = sns.heatmap(WHR_Final.corr(), vmin=-1, vmax=1, annot=True)
-corr_mat.set_title('Correlation Heatmap', fontdict={'fontsize':12}, pad=12)
-plt.show()
+#plt.figure(figsize=(10,10))
+#corr_mat = sns.heatmap(WHR_Final.corr(), vmin=-1, vmax=1, annot=True)
+#corr_mat.set_title('Correlation Heatmap', fontdict={'fontsize':12}, pad=12)
+#plt.show()
 
 #To perform machine learning on factors determing the happiness score, keep only the feature with a type "float"
 
 WHR_2 = WHR_Final.select_dtypes(["float64"])
+#print(WHR_2.info())
+
+#feature_list = ['Economy (GDP per Capita)','Family','Health (Life Expectancy)', 'Freedom', 'Trust (Government Corruption)','Generosity','Happiness Score']
+
+#for col in feature_list:
+    #sns.boxplot(x = WHR_2[col])
+    #plt.xlabel(col)
+    #plt.show()
 
 from sklearn.model_selection import cross_val_score
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error as MSE
 
-
 from sklearn.linear_model import Lasso
-names = X.columns
+names = WHR_2.drop("Happiness Score", axis=1).columns
 lasso = Lasso(alpha=0.1)
 lasso_coef = lasso.fit(X,y).coef_
 _ = plt.plot(range(len(names)), lasso_coef)
 _ = plt.xticks(range(len(names)), names, rotation=60)
 _ = plt.ylabel('Coefficients')
 plt.show()
-
 
 X = WHR_2[["Economy (GDP per Capita)"]]
 y = WHR_2[['Happiness Score']]
@@ -169,7 +175,6 @@ y_pred_gbt = gbt.predict(X_test)
 print(gbt.score(X_test, y_test))
 rmse_test_gbt = MSE(y_test, y_pred_gbt)**1/2
 print('Test set RMSE_GBT: {:.2f}'.format(rmse_test_gbt))
-
 
 
 
