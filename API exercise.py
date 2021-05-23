@@ -1,8 +1,8 @@
 import requests
-#request=requests.get('http://api.open-notify.org/iss-now.json')
-#print(request.status_code)
-#print(request.text)
+request2=requests.get('https://world-population.p.rapidapi.com/population')
 
-request2=requests.get('http://api.openweathermap.org/data/2.5/weather?q=London&appid=Default')
-print(request2.status_code)
-print(request2.text)
+
+def gdp_per_capita (x,y):
+    return x/y
+
+print(gdp_per_capita(200,500))

@@ -138,7 +138,7 @@ print("rcore. ", model.score(X,y))
 gdp_list = [[0.25],[0.50],[0.75],[1.00],[1.25],[1.50]]
 model.predict(gdp_list)
 for g in gdp_list:
-    print("The happiness value of the country with a gdp value of ",g,": ",model.predict([g]))
+    print("The happiness value of the country with a GDP per Capita score of ",g,": ",model.predict([g]))
 reg = LinearRegression()
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2, random_state = 2)
 reg.fit(X_train, y_train)
